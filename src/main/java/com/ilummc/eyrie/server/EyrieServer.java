@@ -1,11 +1,17 @@
 package com.ilummc.eyrie.server;
 
+import com.ilummc.eyrie.server.config.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 
+import java.io.File;
+import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
 
 public class EyrieServer {
 
@@ -13,6 +19,26 @@ public class EyrieServer {
 
     public static void main(String[] args) {
         setupLogger();
+        Config.load();
+        if (!System.getenv().containsKey("debug"))
+            new Statistics();
+        Config.save();
+    }
+
+    public static InputStream getResource(String name) {
+        return EyrieServer.class.getClassLoader().getResourceAsStream(name);
+    }
+
+    public static File getBaseDir() {
+        URL url = EyrieServer.class.getProtectionDomain().getCodeSource().getLocation();
+        try {
+            String dir = URLDecoder.decode(url.toString(), "utf-8");
+            dir = dir.substring(6);
+            return new File(dir).getParentFile();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static Logger getLogger() {
