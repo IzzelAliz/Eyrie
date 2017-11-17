@@ -26,7 +26,7 @@ public class Statistics {
     private final List<CustomChart> charts = new ArrayList<>();
 
     public Statistics() {
-        serverUUID = Config.getInstance().uuid;
+        serverUUID = Config.getInstance().serverUniqueId;
         logFailedRequests = false;
         startSubmitting();
     }

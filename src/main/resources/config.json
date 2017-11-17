@@ -1,3 +1,5 @@
 {
-  "enableStats": true
+  "enableStats": true,
+  "serverPort": 11117,
+  "restApiPort": 11118
 }

@@ -14,8 +14,9 @@ public class Config {
 
     private static Config instance;
 
-    public String uuid = UUID.randomUUID().toString();
+    public String serverUniqueId = UUID.randomUUID().toString();
     public boolean enableStats = true;
+    public int serverPort = 11117;
 
     public static Config getInstance() {
         return instance;

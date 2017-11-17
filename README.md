@@ -1,17 +1,13 @@
 # Eyrie
 
-某开服器的服务端分支
+Eyrie 开服器的服务端分支
 
 客户端分支请查看 client 分支
-
-## Author
-> IzzelAliz
-> KevinWalker
 
 ## 构建
 * Java 8
 * Maven 3
-```
+```shell
 mvn clean install
 ```
 

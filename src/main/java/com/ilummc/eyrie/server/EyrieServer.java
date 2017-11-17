@@ -1,6 +1,8 @@
 package com.ilummc.eyrie.server;
 
 import com.ilummc.eyrie.server.config.Config;
+import com.ilummc.eyrie.server.server.AccountManager;
+import com.ilummc.eyrie.server.server.Server;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.fusesource.jansi.Ansi;
@@ -20,8 +22,15 @@ public class EyrieServer {
     public static void main(String[] args) {
         setupLogger();
         Config.load();
-        if (!System.getenv().containsKey("debug"))
+        if (!System.getenv().containsKey("debug") && Config.getInstance().enableStats)
             new Statistics();
+       AccountManager.load();
+       new Thread(Server::start, "EyrieServer").start();
+    }
+
+    public static void close() {
+        Server.stop();
+        AccountManager.save();
         Config.save();
     }
 
