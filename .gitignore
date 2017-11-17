@@ -1,0 +1,7 @@
+#ID
+.idea/modules.xml
+.idea/vcs.xml
+.idea/workspace.xml
+src/test/
+logs/
+target/
