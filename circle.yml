@@ -9,12 +9,7 @@ dependencies:
   override:
     - git config --global user.email "circle@circleci.com"
     - git config --global user.name "CircleCI"
-    - cd EyrieClient
     - mvn clean instal
-    - cd ..
-    - cd EyrieServer
-    - mvn clean install
-    - cd ..
 test:
   override:
     - yes|mv -f ./target/Eyrie-1.0.jar $CIRCLE_ARTIFACTS/Eyrie-1.0-$CIRCLE_BUILD_NUM.jar

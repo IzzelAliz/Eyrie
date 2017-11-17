@@ -1,6 +1,10 @@
 # Eyrie
 
-某开服器
+某开服器的服务端分支
+
+客户端分支请查看 client 分支
+
+## Author
 > IzzelAliz
 > KevinWalker
 
@@ -12,7 +16,7 @@ mvn clean install
 ```
 
 ## 下载
-[![CircleCI](https://circleci.com/gh/IzzelAliz/Eyrie/tree/master.svg) **需要登录**](https://circleci.com/gh/IzzelAliz/Eyrie/tree/master)
+[![CircleCI](https://circleci.com/gh/IzzelAliz/Eyrie/tree/server.svg) **需要登录**](https://circleci.com/gh/IzzelAliz/Eyrie/tree/server)
 
 ## LICENSE
 
