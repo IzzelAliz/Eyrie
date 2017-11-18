@@ -2,7 +2,7 @@ package com.ilummc.eyrie.server;
 
 import com.ilummc.eyrie.server.config.Config;
 import com.ilummc.eyrie.server.server.AccountManager;
-import com.ilummc.eyrie.server.server.Server;
+import com.ilummc.eyrie.server.server.Host;
 import com.ilummc.eyrie.server.utils.SigarUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,15 +27,15 @@ public class EyrieServer {
         if (!System.getenv().containsKey("debug") && Config.getInstance().enableStats)
             new Statistics();
         AccountManager.load();
-        new Thread(Server::start, "EyrieServer").start();
+        new Thread(Host::start, "EyrieServer").start();
         SigarUtil.init();
         System.out.println("启动完毕，用时 " + (System.currentTimeMillis() - time) + "毫秒。");
         Command.read();
     }
 
-    public static void close() {
+    static void close() {
         long time = System.currentTimeMillis();
-        Server.stop();
+        Host.stop();
         AccountManager.save();
         Config.save();
         System.out.println("Eyrie 已关闭，用时 " + (System.currentTimeMillis() - time) + " 毫秒。");
@@ -66,7 +66,7 @@ public class EyrieServer {
         return logger;
     }
 
-    public static void setupLogger() {
+    private static void setupLogger() {
         PrintStream out = new PrintStream(AnsiConsole.out) {
             public void println(boolean x) {
                 logger.info(new Ansi().a(Boolean.valueOf(x)).fgDefault());

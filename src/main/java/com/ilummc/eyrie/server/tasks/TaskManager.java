@@ -13,8 +13,8 @@ public class TaskManager {
         return id++;
     }
 
-    public static void cancelTask(int id) {
-        tasks.get(id).stop();
+    public static void cancelTask(int id, Task.Callback callback) {
+        tasks.get(id).stop(callback);
         tasks.remove(id);
     }
 }

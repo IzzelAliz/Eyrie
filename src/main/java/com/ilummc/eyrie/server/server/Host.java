@@ -6,7 +6,7 @@ import com.ilummc.eyrie.server.config.Config;
 import java.io.IOException;
 import java.net.ServerSocket;
 
-public class Server {
+public class Host {
 
     private static ServerSocket socket;
     private static Thread current;

@@ -4,7 +4,7 @@ machine:
   notify:
     branches:
       only:
-        - master
+        - server
 dependencies:
   override:
     - git config --global user.email "circle@circleci.com"

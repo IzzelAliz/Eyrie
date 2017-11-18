@@ -4,9 +4,15 @@ public interface Task {
 
     void start();
 
-    void stop();
+    void stop(Callback callback);
+
+    void forceStop();
 
     double getProcess();
 
     boolean isComplete();
+
+    interface Callback {
+        void call();
+    }
 }
