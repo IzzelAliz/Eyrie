@@ -14,12 +14,16 @@ public class AccountManager {
 
     private static final Map<String, String> map = new ConcurrentHashMap<>();
 
+    public static void deleteAccount(String user) {
+        map.remove(user);
+    }
+
     public static void createAccount(String user, String password) {
         map.put(user, BCrypt.hashpw(password, BCrypt.gensalt(16)));
     }
 
     public static boolean checkPassword(String user, String password) {
-        return BCrypt.checkpw(password, map.get(user));
+        return map.containsKey(user) && BCrypt.checkpw(password, map.get(user));
     }
 
     @SuppressWarnings({"unchecked"})
@@ -38,11 +42,13 @@ public class AccountManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("用户信息加载完毕。");
     }
 
     public static void save() {
         try {
             Files.write(new Gson().toJson(map).getBytes(Charset.forName("utf-8")), new File(EyrieServer.getBaseDir(), "accounts.json"));
+            System.out.println("用户信息已经保存。");
         } catch (IOException e) {
             e.printStackTrace();
         }

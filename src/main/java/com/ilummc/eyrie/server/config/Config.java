@@ -37,6 +37,7 @@ public class Config {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        System.out.println("配置文件加载完毕。");
     }
 
     public static void save() {
@@ -46,6 +47,7 @@ public class Config {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("配置文件保存完毕。");
     }
 
 }

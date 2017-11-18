@@ -29,6 +29,7 @@ public class Statistics {
         serverUUID = Config.getInstance().serverUniqueId;
         logFailedRequests = false;
         startSubmitting();
+        System.out.println("准备开始发送统计信息。");
     }
 
     public void addCustomChart(CustomChart chart) {

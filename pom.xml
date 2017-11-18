@@ -53,6 +53,7 @@
                                     <include>org.yaml</include>
                                     <include>org.apache.logging.log4j</include>
                                     <include>org.fusesource.jansi</include>
+                                    <include>org.fusesource</include>
                                     <include>com.google.code.gson</include>
                                     <include>com.google.guava</include>
                                 </includes>
@@ -109,6 +110,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>21.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fusesource</groupId>
+            <artifactId>sigar</artifactId>
+            <version>1.6.4</version>
         </dependency>
     </dependencies>
 </project>

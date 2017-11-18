@@ -9,6 +9,7 @@ public class TaskManager {
 
     public static int runTask(Task task) {
         tasks.put(id, task);
+        task.start();
         return id++;
     }
 
