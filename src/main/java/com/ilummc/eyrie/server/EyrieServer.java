@@ -1,5 +1,6 @@
 package com.ilummc.eyrie.server;
 
+import com.ilummc.eyrie.eyrieaccess.EyrieAccess;
 import com.ilummc.eyrie.server.config.Config;
 import com.ilummc.eyrie.server.server.AccountManager;
 import com.ilummc.eyrie.server.server.Host;
@@ -9,12 +10,13 @@ import org.apache.logging.log4j.Logger;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
+import java.util.UUID;
 
 public class EyrieServer {
 
@@ -29,6 +31,7 @@ public class EyrieServer {
         AccountManager.load();
         new Thread(Host::start, "EyrieServer").start();
         SigarUtil.init();
+        EyrieAccess.start(Config.getInstance().eyrieAccessPort, null);
         System.out.println("启动完毕，用时 " + (System.currentTimeMillis() - time) + "毫秒。");
         Command.read();
     }

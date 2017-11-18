@@ -166,7 +166,7 @@ public class Statistics {
                 chart.put("data", data);
             } catch (Throwable t) {
                 if (logFailedRequests) {
-                    EyrieServer.getLogger().warn("Failed to get data for custom chart with id " + chartId, t);
+                    EyrieServer.getLogger().warn("Failed to getFromUsername data for custom chart with id " + chartId, t);
                 }
                 return null;
             }

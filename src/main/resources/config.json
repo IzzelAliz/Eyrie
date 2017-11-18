@@ -1,5 +1,7 @@
 {
   "enableStats": true,
   "serverPort": 11117,
-  "restApiPort": 11118
+  "restApiPort": 11118,
+  "eyrieAccessPort": 11119,
+  "eyrieAccessHost": null
 }

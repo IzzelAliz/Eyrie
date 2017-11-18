@@ -16,7 +16,8 @@ public class Config {
 
     public String serverUniqueId = UUID.randomUUID().toString();
     public boolean enableStats = true;
-    public int serverPort = 11117;
+    public int serverPort = 11117, restApiPort = 11118, eyrieAccessPort = 11119;
+    public String eyrieAccessHost = null;
 
     public static Config getInstance() {
         return instance;
