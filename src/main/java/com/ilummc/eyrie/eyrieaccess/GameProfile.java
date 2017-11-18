@@ -10,7 +10,7 @@ public class GameProfile {
     private String id;
     /*In game name*/
     private String name;
-    private transient String password;
+    private String password;
 
     public GameProfile(String id, String name, String password) {
         this.id = id;
@@ -23,7 +23,7 @@ public class GameProfile {
     }
 
     public boolean matches(String password) {
-        return sha512(password).equals(password);
+        return sha512(password).equals(this.password);
     }
 
     public String getName() {

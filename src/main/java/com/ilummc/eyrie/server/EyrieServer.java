@@ -10,13 +10,14 @@ import org.apache.logging.log4j.Logger;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
+import java.io.File;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.nio.charset.Charset;
-import java.util.UUID;
+import java.net.UnknownHostException;
 
 public class EyrieServer {
 
@@ -31,13 +32,18 @@ public class EyrieServer {
         AccountManager.load();
         new Thread(Host::start, "EyrieServer").start();
         SigarUtil.init();
-        EyrieAccess.start(Config.getInstance().eyrieAccessPort, null);
+        try {
+            EyrieAccess.start(Config.getInstance().eyrieAccessPort, InetAddress.getByName(Config.getInstance().eyrieAccessHost));
+        } catch (UnknownHostException e) {
+            System.err.println("Eyrie Access Host 配置项填写错误。Eyrie Access 将不能启动。");
+        }
         System.out.println("启动完毕，用时 " + (System.currentTimeMillis() - time) + "毫秒。");
         Command.read();
     }
 
     static void close() {
         long time = System.currentTimeMillis();
+        EyrieAccess.stop();
         Host.stop();
         AccountManager.save();
         Config.save();

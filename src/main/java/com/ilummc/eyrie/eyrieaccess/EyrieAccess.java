@@ -17,19 +17,21 @@ public class EyrieAccess {
 
     public static void start(int port, InetAddress address) {
         new Thread(() -> {
+            ProfileManager.load();
             try {
-                if (address != null)
+                if (address == null)
                     socket = new ServerSocket(port, 50);
                 else
                     socket = new ServerSocket(port, 50, address);
+                socket.setSoTimeout(5000);
                 System.out.println("Eyrie Access 开始在 " + port + " 端口上运行。");
             } catch (IOException e) {
                 e.printStackTrace();
                 System.err.println("Eyrie Access 启动失败。可能端口 " + port + " 被占用？");
             }
             while (true) {
-                try {
-                    Socket client = socket.accept();
+                try (Socket client = socket.accept()) {
+                    client.setSoTimeout(5000);
                     service.execute(() -> {
                         try {
                             BufferedReader path = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -81,15 +83,24 @@ public class EyrieAccess {
                                     } else
                                         response404(client.getOutputStream());
                             }
-                            client.close();
                         } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     });
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (IOException ignored) {
+                    System.out.println("Eyrie Access 已停止运行。");
+                    break;
                 }
             }
         }, "EyrieAccess").start();
+    }
+
+    public static void stop() {
+        try {
+            socket.close();
+        } catch (IOException ignored) {
+        }
+        ProfileManager.save();
     }
 
     public static void response404(OutputStream outputStream) {
