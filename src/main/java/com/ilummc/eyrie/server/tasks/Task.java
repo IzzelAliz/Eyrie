@@ -1,6 +1,8 @@
 package com.ilummc.eyrie.server.tasks;
 
-public interface Task {
+import com.ilummc.eyrie.server.Jsonable;
+
+public interface Task extends Jsonable {
 
     void start();
 
@@ -11,6 +13,8 @@ public interface Task {
     double getProcess();
 
     boolean isComplete();
+
+    String toJson();
 
     interface Callback {
         void call();

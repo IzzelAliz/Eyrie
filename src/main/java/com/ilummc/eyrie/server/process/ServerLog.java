@@ -10,6 +10,7 @@ public class ServerLog {
     static {
         new Thread(() -> {
             while (true) {
+                List<Server> copy;
                 synchronized (processes) {
                     processes.stream().filter(Server::isRunning).forEach(server -> {
                         try {
@@ -21,7 +22,9 @@ public class ServerLog {
                             e.printStackTrace();
                         }
                     });
+                    copy = new ArrayList<>(processes);
                 }
+                copy.stream().filter(s -> !s.isRunning()).forEach(processes::remove);
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException ignored) {

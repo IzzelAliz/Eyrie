@@ -1,6 +1,7 @@
 package com.ilummc.eyrie.server.process;
 
 import com.google.gson.Gson;
+import com.ilummc.eyrie.server.Jsonable;
 import com.ilummc.eyrie.server.utils.FixedList;
 
 import java.io.*;
@@ -8,12 +9,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class Server {
+public class Server implements Jsonable {
 
     transient Process process;
     transient BufferedReader dataIn, errIn;
     private transient BufferedWriter dataOut;
-    transient private FixedList<String> cachedLogs = new FixedList<>(50);
+    private transient FixedList<String> cachedLogs = new FixedList<>(50);
 
     transient int playerAmount;
     private transient boolean running = false;
@@ -24,7 +25,8 @@ public class Server {
     private File jar;
     private List<String> jvmargs = new ArrayList<>();
 
-    private boolean pluginServer = false, moddedServer = false;
+    private int bootPriority = 5;
+    private boolean pluginServer = false, moddedServer = false, autoBoot = false;
 
     public void executeCommand(String command) {
         try {
@@ -32,6 +34,18 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getBootPriority() {
+        return bootPriority;
+    }
+
+    public boolean isAutoBoot() {
+        return autoBoot;
+    }
+
+    public File getPluginFolder() {
+        return new File(folder, "/plugins");
     }
 
     public File getFolder() {
@@ -94,6 +108,7 @@ public class Server {
     }
 
     public static Server newServerFromFolder(File folder) {
+        // TODO
         return new Server();
     }
 

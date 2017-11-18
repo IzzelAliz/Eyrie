@@ -27,11 +27,7 @@ public class RequestHandler {
             stream.println(new Gson().toJson(profile));
             stream.flush();
         } else {
-            PrintStream stream = new PrintStream(outputStream);
-            stream.println("HTTP/1.1 204 No Content");
-            stream.println("Content-Type: application/json; charset=utf-8");
-            stream.println();
-            stream.flush();
+            response204(outputStream);
         }
     }
 
@@ -45,11 +41,7 @@ public class RequestHandler {
             stream.println(new Gson().toJson(ProfileManager.getFromAccessToken(sessionMap.get(serverId).accessToken)));
             stream.flush();
         } else {
-            PrintStream stream = new PrintStream(outputStream);
-            stream.println("HTTP/1.1 204 No Content");
-            stream.println("Content-Type: application/json; charset=utf-8");
-            stream.println();
-            stream.flush();
+            response204(outputStream);
         }
     }
 
@@ -63,22 +55,17 @@ public class RequestHandler {
                     sessionMap.remove(clientJoin.serverId);
                 }
             }, 20, TimeUnit.SECONDS);
-            PrintStream stream = new PrintStream(outputStream);
-            stream.println("HTTP/1.1 204 No Content");
-            stream.println("Content-Type: application/json; charset=utf-8");
-            stream.println();
-            stream.flush();
+            response204(outputStream);
         } else {
-            PrintStream stream = new PrintStream(outputStream);
-            stream.println("HTTP/1.1 403 Forbidden");
-            stream.println("Content-Type: application/json; charset=utf-8");
-            stream.println();
-            stream.println(new Gson().toJson(new Error("ForbiddenOperationException", "令牌无效。")));
-            stream.flush();
+            response403(outputStream, new Gson().toJson(new Error("ForbiddenOperationException", "令牌无效。")));
         }
     }
 
     public static void handleAuthenticate(Authenticate authenticate, OutputStream outputStream) {
+        if (!ProfileManager.getFromUsername(authenticate.username).cooldown()) {
+            response403(outputStream, new Gson().toJson(new Error("ForbiddenOperationException", "无效的验证。无效的用户名或密码。。")));
+            return;
+        }
         if (ProfileManager.matches(authenticate.username, authenticate.password)) {
             PrintStream stream = new PrintStream(outputStream);
             stream.println("HTTP/1.1 200 OK");
@@ -87,11 +74,7 @@ public class RequestHandler {
             stream.println(new Gson().toJson(TokenManager.auth(authenticate)));
             stream.flush();
         } else {
-            PrintStream stream = new PrintStream(outputStream);
-            stream.println("HTTP/1.1 403 Forbidden");
-            stream.println("Content-Type: application/json; charset=utf-8");
-            stream.println();
-            stream.flush();
+            response403(outputStream, null);
         }
     }
 
@@ -110,23 +93,30 @@ public class RequestHandler {
 
     public static void handleValidate(Validate validate, OutputStream outputStream) {
         if (TokenManager.checkToken(validate)) {
-            PrintStream stream = new PrintStream(outputStream);
-            stream.println("HTTP/1.1 204 No Content");
-            stream.println("Content-Type: application/json; charset=utf-8");
-            stream.println();
-            stream.flush();
+            response204(outputStream);
         } else {
-            PrintStream stream = new PrintStream(outputStream);
-            stream.println("HTTP/1.1 403 Forbidden");
-            stream.println("Content-Type: application/json; charset=utf-8");
-            stream.println();
-            stream.println(new Gson().toJson(new Error("ForbiddenOperationException", "令牌无效。")));
-            stream.flush();
+            response403(outputStream, new Gson().toJson(new Error("ForbiddenOperationException", "令牌无效。")));
         }
     }
 
     public static void handleInvalidate(Validate validate, OutputStream outputStream) {
         TokenManager.invalidate(validate);
+        response204(outputStream);
+    }
+
+    public static void handleSignout(Signout signout, OutputStream outputStream) {
+        if (!ProfileManager.getFromUsername(signout.username).cooldown()) {
+            response403(outputStream, new Gson().toJson(new Error("ForbiddenOperationException", "无效的验证。无效的用户名或密码。。")));
+            return;
+        }
+        if (TokenManager.signout(signout)) {
+            response204(outputStream);
+        } else {
+            response403(outputStream, null);
+        }
+    }
+
+    public static void response204(OutputStream outputStream) {
         PrintStream stream = new PrintStream(outputStream);
         stream.println("HTTP/1.1 204 No Content");
         stream.println("Content-Type: application/json; charset=utf-8");
@@ -134,20 +124,13 @@ public class RequestHandler {
         stream.flush();
     }
 
-    public static void handleSignout(Signout signout, OutputStream outputStream) {
-        if (TokenManager.signout(signout)) {
-            PrintStream stream = new PrintStream(outputStream);
-            stream.println("HTTP/1.1 204 No Content");
-            stream.println("Content-Type: application/json; charset=utf-8");
-            stream.println();
-            stream.flush();
-        } else {
-            PrintStream stream = new PrintStream(outputStream);
-            stream.println("HTTP/1.1 403 Forbidden");
-            stream.println("Content-Type: application/json; charset=utf-8");
-            stream.println();
-            stream.flush();
-        }
+    public static void response403(OutputStream outputStream, String msg) {
+        PrintStream stream = new PrintStream(outputStream);
+        stream.println("HTTP/1.1 403 Forbidden");
+        stream.println("Content-Type: application/json; charset=utf-8");
+        stream.println();
+        if (msg != null) stream.println(msg);
+        stream.flush();
     }
 
     static class ClientJoin {

@@ -6,6 +6,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class GameProfile {
+
+    transient long last = System.currentTimeMillis();
+
     /*UUID*/
     private String id;
     /*In game name*/
@@ -16,6 +19,12 @@ public class GameProfile {
         this.id = id;
         this.name = name;
         this.password = sha512(password);
+    }
+
+    public boolean cooldown() {
+        boolean b = System.currentTimeMillis() - last >= 1000 * 10;
+        last = System.currentTimeMillis();
+        return b;
     }
 
     public String getId() {
